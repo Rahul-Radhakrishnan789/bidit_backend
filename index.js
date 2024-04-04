@@ -20,6 +20,11 @@ app.use(cors(corsOptions))
 app.use(morgan("dev"))
 
 
+main().catch((err) => console.log(err))
+async function main() {
+  await mongoose.connect(process.env.mongoDBurl);
+  console.log("db connected");
+}
 
 
 
