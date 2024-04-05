@@ -18,6 +18,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors(corsOptions))
 app.use(morgan("dev"))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 
 main().catch((err) => console.log(err))
@@ -29,8 +30,15 @@ async function main() {
 
 
 const userRouter=require("./routes/userRoutes")
-app.use(userRouter)
+app.use("/api",userRouter)
 
+
+const adminRouter = require("./routes/adminRoutes")
+app.use("/api",adminRouter)
+
+
+const vendorRouter = require("./routes/vendorRoutes")
+app.use("/api",vendorRouter)
 
 
 

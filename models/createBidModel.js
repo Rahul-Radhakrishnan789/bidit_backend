@@ -21,10 +21,11 @@ const createBid = new mongoose.Schema({
     },
     startTime: { 
         type: Date,
-        default: Date.now 
+        default: Date.now()
     },
      auctionDuration:{
         type:Date
+
     },
     images:{
         type:Array
@@ -40,6 +41,7 @@ const createBid = new mongoose.Schema({
     highestBidAmount:{
         type:Number
     },
+   
 })
 
 
