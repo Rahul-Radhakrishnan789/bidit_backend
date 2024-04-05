@@ -48,4 +48,18 @@ res.status(200).json({
   }
 }
 
-module.exports = {createBid}
+
+const displayBids = async(req,res) => {
+
+    const bids = await createBidModel.find({})
+
+    return res.status(200).json({
+        status:'success',
+        message:'all bids fetched succefully',
+        data:bids,
+    })
+
+}
+
+
+module.exports = {createBid,displayBids}

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-
+const dayjs = require('dayjs') 
 
 const createBid = new mongoose.Schema({
     vendorId:{
@@ -20,12 +20,12 @@ const createBid = new mongoose.Schema({
         type:String
     },
     startTime: { 
-        type: Date,
-        default: Date.now()
+        type: String,
+        default: () => dayjs().format('DD-MM-YYYY-HH-mm-ss')
     },
      auctionDuration:{
-        type:Date
-
+        type:Number
+        
     },
     images:{
         type:Array

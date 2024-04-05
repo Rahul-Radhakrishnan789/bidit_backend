@@ -6,6 +6,8 @@ const upload = require("../middlewares/multerMiddleware")
 
 router.post("/createBid/:vendorId",upload.array("images",5),tryCatch(Vendor.createBid))
 
+router.get("/getbids",tryCatch(Vendor.displayBids))
+
 
 
 module.exports = router
