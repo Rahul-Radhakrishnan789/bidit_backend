@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 
 const userBids = new mongoose.Schema({
-    user:{
+    userId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
@@ -18,10 +18,14 @@ const userBids = new mongoose.Schema({
       },
       isBidded:{
         type:Boolean,
-        dafault:false
+        default:false
+      },
+      timeOfBid:{
+        type:Date,
+        default: Date.now()
       }
 })
 
-const UserBid = mongoose.model('UserBid', UserBidSchema);
+const UserBid = mongoose.model('UserBid', userBids);
 
 module.exports = UserBid;

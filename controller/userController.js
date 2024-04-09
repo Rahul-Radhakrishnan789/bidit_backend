@@ -2,9 +2,99 @@ const userModel=require("../models/userModel")
 const vendorModel=require("../models/vendorModel")
 const bcrypt=require("bcrypt")
 const jwt=require('jsonwebtoken')
+const bidItem = require("../models/createBidModel")
+const userBid = require('../models/userBidsModel')
 
 
+const placeBid = async(req,res) => {
+    const { amount } = req.body;
+    const userId = req.params.userId;
+    const itemId = req.params.itemId;
 
+    const itemData = await bidItem.findById(itemId).populate().exec()
+
+    
+
+   
+
+    if (!itemData) {
+        return res.status(404).json({
+          status: "failure",
+          message: "Item not found",
+        });
+      }
+
+      if (amount <= itemData.basePrice) {
+        return res.status(404).json({
+          status: "failure",
+          message: "amount should never get less than baseprice",
+        });
+      }
+
+      const getRemainingTime = (startTime, auctionDuration) => {
+        const currentTime = new Date();
+        const endTime = new Date(startTime.getTime() + auctionDuration * 3600000);
+        return Math.max(0, endTime - currentTime);
+      };
+      const remainingTime = getRemainingTime(
+        itemData.startTime,
+        itemData.auctionDuration
+      );
+
+
+      if (remainingTime !== 0 ) {
+        const newBid = new userBid({
+          userId,
+          amount,
+          bidItem:itemId,
+        });
+
+        await newBid.save();
+
+       itemData.bidders.push(newBid._id)
+
+       await itemData.save();
+
+      
+
+        console.log(itemData)
+
+
+        res.status(200).json({
+          status: "success",
+          message: "bidding succesful",
+          data: newBid,
+        });
+      }else{
+        res.status(404).json({
+            status: "failiure",
+            message: "time limit has exceeded",
+        })
+      }
+
+}
+
+const showAllData = async (req,res) => {
+
+    const itemId = req.params.itemId;
+
+    const bids = await bidItem.findById({ _id: itemId }).populate({
+        path: 'bidders',
+        match: { bidItem: itemId },
+        populate:[{path:'userId',
+        select : 'username'}]
+    })
+
+    if (!bids) {
+        return res.status(404).json({ message: 'Bidders not found' });
+    }
+    res.status(200).json({
+        status: "success",
+        message: "bids fetching succesful",
+        data: bids,
+    })
+
+}
 
 
 
@@ -122,7 +212,7 @@ const commonLogin=async(req,res)=>{
                 message:"ventor not registered,please Register"
             })
         }
-        const comparePassword = await bcrypt.compare(password,ventor?.password)      
+        const comparePassword = bcrypt.compare(password, ventor?.password)      
         if(comparePassword){
             const secret = process.env.SECRET_KEY_VENTOR;
             const token = jwt.sign({
@@ -148,7 +238,7 @@ const commonLogin=async(req,res)=>{
     }
     const user=await userModel.findOne({email:email})
     if(user){
-        const comparePassword = await bcrypt.compare(password,user?.password) 
+        const comparePassword = bcrypt.compare(password, user?.password) 
         // console.log("pass",comparePassword);
         if(comparePassword){
             const secret = process.env.SECRET_KEY_USER;
@@ -183,4 +273,4 @@ const commonLogin=async(req,res)=>{
 }
 
 
-module.exports={commonRegister,commonLogin}
+module.exports={commonRegister,commonLogin,placeBid,showAllData}

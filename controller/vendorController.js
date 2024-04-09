@@ -25,6 +25,8 @@ const createBid = async(req,res) => {
         fs.unlinkSync(path);
       }
 
+    
+
 const  newBid = new createBidModel({
     vendorId,
     itemName,
