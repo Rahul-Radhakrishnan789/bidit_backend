@@ -8,6 +8,10 @@ router.post("/createBid/:vendorId",upload.array("images",5),tryCatch(Vendor.crea
 
 router.get("/getbids",tryCatch(Vendor.displayBids))
 
+router.post("/savehighestbidder/:itemId",tryCatch(Vendor.saveHighestBidder))
+
+router.get("/fetchuserbids/:userId",tryCatch(Vendor.fetchUserBids))
+
 
 
 module.exports = router

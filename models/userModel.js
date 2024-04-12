@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-    }
+    },
 })
 
 const User = mongoose.model("User",userSchema)

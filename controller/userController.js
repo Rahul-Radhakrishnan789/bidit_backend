@@ -6,6 +6,7 @@ const bidItem = require("../models/createBidModel")
 const userBid = require('../models/userBidsModel')
 
 
+
 const placeBid = async(req,res) => {
     const { amount } = req.body;
     const userId = req.params.userId;
@@ -273,4 +274,4 @@ const commonLogin=async(req,res)=>{
 }
 
 
-module.exports={commonRegister,commonLogin,placeBid,showAllData}
+module.exports={commonRegister,commonLogin,placeBid,showAllData,}

@@ -35,11 +35,9 @@ const createBid = new mongoose.Schema({
      }],
      highestBidder:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref:'UserBid'
     },
-    highestBidAmount:{
-        type:Number
-    },
+   
    
 })
 
