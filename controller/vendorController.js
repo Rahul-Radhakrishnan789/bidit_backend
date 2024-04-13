@@ -34,6 +34,22 @@ const saveHighestBidder = async (req, res) => {
     });
   }
 
+  const existingData = await higherBidderModel.findOne({
+    itemId: ItemId,
+  });
+
+  console.log("existing daata",existingData)
+
+ 
+  if (existingData) {
+    return res.status(500).json({
+      status: "success",
+      message: "Data already exists in the database",
+      data: existingData,
+    });
+  }
+
+
 const highestBidderData = new higherBidderModel({
   itemId:ItemId,
   highestBidderId:highestBidder
@@ -54,15 +70,13 @@ await highestBidderData.save()
 
 const fetchUserBids = async (req,res) => {
 
-  const userId = req.params.userId;
+  
 
   const userBids = await higherBidderModel.find({}).populate({
     path:'highestBidderId',
-    match:{userId},
     populate:[{path:"bidItem", select:'itemName images amount'}]
   })
 
-  console.log('first',userBids)
 
   res.status(200).json({
     status: "success",

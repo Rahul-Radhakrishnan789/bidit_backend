@@ -8,6 +8,10 @@ router.get("/getusers",tryCatch(Admin.getAllUsers))
 
 router.get("/getvendors",tryCatch(Admin.getAllVendors))
 
+router.post('/paymentstart',tryCatch(Admin.paymentInit))
+
+router.post('/paymentfinal/:itemId/:userId',tryCatch(Admin.verifyPayment))
+
 
 
 

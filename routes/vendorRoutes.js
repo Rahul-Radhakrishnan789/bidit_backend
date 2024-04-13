@@ -10,7 +10,7 @@ router.get("/getbids",tryCatch(Vendor.displayBids))
 
 router.post("/savehighestbidder/:itemId",tryCatch(Vendor.saveHighestBidder))
 
-router.get("/fetchuserbids/:userId",tryCatch(Vendor.fetchUserBids))
+router.get("/fetchuserbids",tryCatch(Vendor.fetchUserBids))
 
 
 
