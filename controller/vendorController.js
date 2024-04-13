@@ -74,7 +74,7 @@ const fetchUserBids = async (req,res) => {
 
   const userBids = await higherBidderModel.find({}).populate({
     path:'highestBidderId',
-    populate:[{path:"bidItem", select:'itemName images amount'}]
+    populate:[{path:"bidItem", select:'itemName images amount description'}]
   })
 
 

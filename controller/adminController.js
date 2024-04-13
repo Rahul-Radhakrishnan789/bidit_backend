@@ -2,6 +2,7 @@ const userModel=require("../models/userModel")
 const vendorModel=require("../models/vendorModel")
 const Razorpay = require('razorpay')
 const orderModel = require("../models/orderSchema")
+const higherBidderModel = require("../models/higherBidModel")
 const crypto = require('crypto')
 
 
@@ -49,16 +50,29 @@ const userId = req.params.userId
                 amount:amount,
                 ItemId:itemId,
                 userId:userId,
-                razorpay_payment_id:razorpay_payment_id
+                razorpay_payment_id:razorpay_payment_id,
             })
       
             await order.save();
+
+           const highestBidder = await higherBidderModel.findById(itemId)
+
+           if(!highestBidder){
+            return res.status(404).json({
+                status:"failed",
+                message:"highestBidder is not found"
+            })
+           }
+
+           highestBidder.paid = true
+
+          await highestBidder.save()
       
       
             res.status(200).json({
             status:"success",
             message: "Payment verified successfully",
-            data:order,
+            data:order,highestBidder,
             });
               } else {
                   return res.status(400).json({ message: "Invalid signature sent!" });

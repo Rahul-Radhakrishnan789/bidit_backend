@@ -9,7 +9,11 @@ const higherBidSchema = new mongoose.Schema({
    type: mongoose.Schema.Types.ObjectId,
    ref:'UserBid'
   },
-  
+  paid:{
+    type:Boolean,
+    default:false
+}
+
 })
 
 
