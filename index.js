@@ -23,7 +23,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 main().catch((err) => console.log(err))
 async function main() {
-  await mongoose.connect(process.env.mongoDBurl);
+  await mongoose.connect("mongodb://127.0.0.1:27017/bidit");
   console.log("db connected");
 }
 
