@@ -132,6 +132,21 @@ const createBid = async (req, res) => {
 };
 
 const displayBids = async (req, res) => {
+
+  const vendorId = req.params.id;
+
+  const bids = await createBidModel.find({vendorId:vendorId});
+
+  return res.status(200).json({
+    status: "success",
+    message: "all bids fetched succefully",
+    data: bids,
+  });
+};
+
+const displayAllBids =  async (req, res) => {
+
+
   const bids = await createBidModel.find({});
 
   return res.status(200).json({
@@ -141,4 +156,83 @@ const displayBids = async (req, res) => {
   });
 };
 
-module.exports = { createBid, displayBids, saveHighestBidder,fetchUserBids };
+const getWinners = async (req,res) => {
+  vendorId = req.params.id;
+
+  const winnersData = await higherBidderModel.find({ paid: true }) 
+  .populate({
+     path: 'itemId',
+     match: { vendorId: vendorId },
+   }).populate({
+    path: 'highestBidderId',
+    populate:'userId',
+    select:'username email amount'
+   
+  });
+
+ 
+   return res.status(200).json({
+    status: "success",
+    message: "all bids fetched succefully",
+    data: winnersData,
+  });
+
+}
+
+const deleteBid = async (req, res) => {
+  const bidId = req.params.id;
+
+  const deletedBid = await createBidModel.findByIdAndDelete(bidId);
+
+  if (!deletedBid) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  res.status(200).json({
+    status:"success",
+    message: "User deleted successfully",
+    data:deletedBid
+  });  
+}
+
+const editBid = async (req, res) => {
+  const bidId = req.params.id;
+  const updatedData = req.body;
+
+
+  let updatedImages = [];
+  if (req.files) {
+    const uploader = async (path) => await cloudinary.uploads(path, "images"); 
+    const files = req.files;
+
+    for (const file of files) {
+      const { path } = file;
+      const newPath = await uploader(path);
+      updatedImages.push(newPath.url); 
+      fs.unlinkSync(path); 
+    }
+  }
+
+ 
+  if (updatedData.images && updatedImages.length > 0) {
+    updatedData.images = updatedData.images.concat(updatedImages); 
+  } else {
+    updatedData.images = updatedImages.length > 0 ? updatedImages : undefined; 
+  }
+
+  const editedBid = await createBidModel.findByIdAndUpdate(bidId, updatedData, { new: true });
+
+  if (!editedBid) {
+    return res.status(404).json({ error: 'Bid not found' });
+  }
+
+  console.log(editedBid);
+
+  return res.json({
+    status: "success",
+    message: 'Bid updated successfully',
+    data: editedBid,
+  });
+};
+
+
+module.exports = { createBid, displayBids, saveHighestBidder,fetchUserBids,displayAllBids,getWinners,deleteBid,editBid };
