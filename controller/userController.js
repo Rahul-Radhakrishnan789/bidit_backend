@@ -126,76 +126,38 @@ const  commonRegister=async(req,res)=>{
 
         })
     }
+    }
 
-    const user=await userModel.findOne({email:email})
+    const userRegister = async (req,res) => {
 
-    if(!user){
+        const {username,email,password,}=req.body
 
-        if (isGoogleUser && !password) {
+        const user=await userModel.findOne({email:email})
 
-            const USER=new userModel({
-                username:username,email:email
+        if(user){
+            return res.status(301).json({
+                message:"user already registered ,please login",
             })
-         
-            const user=await USER.save()
-            const token = jwt.sign({
-                        userId: user?._id,
-                        
-                    },
-                    process.env.SECRET_KEY_USER, { expiresIn: '72h' }
-                    );
-        
-                    return res.status(201).json({
-                        status:"success",
-                        message:"user registration successfull",
-                        data:email,
-                        token:token,
-                        type:"googleuser"
-                    })
-
-
         }
-       
+
         const hashedPassword=await bcrypt.hash(password,10)
         
         const USER=new userModel({
             username:username,email:email,password:hashedPassword
         })
         await USER.save()
-        // if(isGoogleUser){
-        //     const token = jwt.sign({
-        //         userId: user?._id,
-                
-        //     },
-        //     process.env.SECRET_KEY_USER, { expiresIn: '72h' }
-        //     );
 
-        //     return res.status(201).json({
-        //         status:"success",
-        //         message:"user registration successfull",
-        //         data:email,
-        //         token:token,
-        //         type:"googleuser"
-        //     })
-
-        // }
         return res.status(201).json({
             status:"success",
             message:"user registration successfull",
             data:email,
-            type:"normalUser"
         })
-        
     }
-    return res.status(301).json({
-        message:"user already registered ,please login",
-
-    })
+ 
 
 
 
 
-}
 
 
 const commonLogin=async(req,res)=>{
@@ -274,4 +236,4 @@ const commonLogin=async(req,res)=>{
 }
 
 
-module.exports={commonRegister,commonLogin,placeBid,showAllData,}
+module.exports={commonRegister,commonLogin,placeBid,showAllData,userRegister}

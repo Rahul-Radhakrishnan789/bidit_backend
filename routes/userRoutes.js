@@ -9,6 +9,7 @@ router.post("/commonregister",tryCatch(User.commonRegister))
 router.post("/commonlogin",tryCatch(User.commonLogin)) 
 router.post("/placebid/:userId/:itemId",tryCatch(User.placeBid))
 router.get("/fetchdata/:itemId",tryCatch(User.showAllData))
+router.post("/userRegister",tryCatch(User.userRegister))
 
 
 

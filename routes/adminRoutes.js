@@ -12,6 +12,12 @@ router.post('/paymentstart',tryCatch(Admin.paymentInit))
 
 router.post('/paymentfinal/:itemId/:userId',tryCatch(Admin.verifyPayment))
 
+router.get("/getallwinners",tryCatch(Admin.getAllWinners))
+
+router.get("/getallbids",tryCatch(Admin.getAllBids))
+
+router.post('/paymentforregister',tryCatch(Admin.verifyPaymentForRegister))
+
 
 
 
