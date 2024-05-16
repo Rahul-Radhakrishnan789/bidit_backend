@@ -4,7 +4,7 @@ const bcrypt=require("bcrypt")
 const jwt=require('jsonwebtoken')
 const bidItem = require("../models/createBidModel")
 const userBid = require('../models/userBidsModel')
-
+const cloudinary = require("../cloudinary/cloudinary")
 
 
 const placeBid = async(req,res) => {
@@ -101,17 +101,43 @@ const showAllData = async (req,res) => {
 
 const  commonRegister=async(req,res)=>{
      
-    const {username,email,password,isVendor,isGoogleUser}=req.body
+    const {username,email,password,isVendor,mobile}=req.body
 //    const hashedPassword=await bcrypt.hash(password,10)
+console.log('first', req.body)
 
-    console.log(username,email,password,isVendor,isGoogleUser);
+    console.log(username,email,password,isVendor,);
 
+    let urls = [];
+
+    
+  const uploader = async (path) => await cloudinary.uploads(path, "images");
+  if (req.method == "POST") {
+    const files = req.files;
+
+    console.log('files',files)
+
+    for (const file of files) {
+      const { path } = file;
+
+      const newPath = await uploader(path);
+
+      urls.push(newPath);
+
+      // fs.unlinkSync(path);
+    }
+  }
 
     if(isVendor){
         const vendor=await vendorModel.findOne({email:email})
         if(!vendor){
             const hashedPassword=await bcrypt.hash(password,10)
-            const VENDOR=new vendorModel({username:username,email:email,password:hashedPassword})
+            const VENDOR=new vendorModel({
+                username:username,
+                email:email,
+                password:hashedPassword,
+                mobile:mobile,
+                images:urls,
+            })
             VENDOR.save()
 
             return res.status(201).json({
@@ -130,7 +156,29 @@ const  commonRegister=async(req,res)=>{
 
     const userRegister = async (req,res) => {
 
-        const {username,email,password,}=req.body
+        const {username,email,password,mobile}=req.body
+
+        console.log('first,',req.body)
+
+        let urls = [];
+
+    
+        const uploader = async (path) => await cloudinary.uploads(path, "images");
+        if (req.method == "POST") {
+          const files = req.files;
+      
+          console.log('files',files)
+      
+          for (const file of files) {
+            const { path } = file;
+      
+            const newPath = await uploader(path);
+      
+            urls.push(newPath);
+      
+            // fs.unlinkSync(path);
+          }
+        }
 
         const user=await userModel.findOne({email:email})
 
@@ -143,7 +191,12 @@ const  commonRegister=async(req,res)=>{
         const hashedPassword=await bcrypt.hash(password,10)
         
         const USER=new userModel({
-            username:username,email:email,password:hashedPassword
+            username:username,
+            email:email,
+            password:hashedPassword,
+            mobile:mobile,
+            images:urls
+
         })
         await USER.save()
 

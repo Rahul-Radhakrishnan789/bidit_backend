@@ -105,7 +105,7 @@ const createBid = async (req, res) => {
 
       urls.push(newPath);
 
-      fs.unlinkSync(path);
+      // fs.unlinkSync(path);
     }
 
     const newBid = new createBidModel({
@@ -170,11 +170,13 @@ const getWinners = async (req,res) => {
    
   });
 
+  winnersDataToSend = winnersData.filter((winner) => winner.itemId !== null);
+
  
    return res.status(200).json({
     status: "success",
     message: "all bids fetched succefully",
-    data: winnersData,
+    data: winnersDataToSend,
   });
 
 }

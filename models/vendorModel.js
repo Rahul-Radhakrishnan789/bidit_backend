@@ -12,6 +12,12 @@ const vendorSchema = new mongoose.Schema({
     },
     password:{
         type:String,
+    },
+       mobile:{
+        type:String,
+    },
+    images:{
+        type:Array
     }
 })
 
