@@ -13,12 +13,8 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
     },
-    mobile:{
-        type:String,
-    },
-    images:{
-        type:Array
-    }
+
+  
 })
 
 const User = mongoose.model("User",userSchema)

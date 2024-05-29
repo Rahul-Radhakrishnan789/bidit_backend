@@ -16,9 +16,7 @@ const vendorSchema = new mongoose.Schema({
        mobile:{
         type:String,
     },
-    images:{
-        type:Array
-    }
+ 
 })
 
 const Vendor = mongoose.model("Vendor",vendorSchema)
